@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Andrey Pissantchev",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andrey-p/arg-err"
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec test/arg-err.js"
   },
