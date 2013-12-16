@@ -9,6 +9,10 @@
     "type": "git",
     "url": "https://github.com/andrey-p/arg-err"
   },
+  "keywords": {
+    "validation",
+    "utility"
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec test/arg-err.js"
   },
