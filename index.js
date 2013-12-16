@@ -7,10 +7,10 @@ exports.err = function (input, schema) {
   var prop,
     type,
     errs = [],
-    err;
+    err = null;
 
-  for (prop in input) {
-    if (input.hasOwnProperty(prop) && schema.hasOwnProperty(prop)) {
+  for (prop in schema) {
+    if (schema.hasOwnProperty(prop)) {
       type = kindof(input[prop]);
 
       if (type !== schema[prop]) {

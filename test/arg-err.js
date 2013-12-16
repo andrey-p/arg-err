@@ -17,12 +17,14 @@ describe("arg-err", function () {
       err = arg.err(input, { foo: "number" });
 
     should.exist(err);
-  });
-  it("should give the error in the expected format", function () {
-    var input = { foo: "2" },
-      err = arg.err(input, { foo: "number" });
-
     err.should.equal("expected argument foo to be of type number (was string)");
+  });
+  it("should give an error for missing args", function () {
+    var input = { foo: 2 },
+      err = arg.err(input, { foo: "number", bar: "string" });
+
+    should.exist(err);
+    err.should.equal("expected argument bar to be of type string (was undefined)");
   });
   it("should give multiple errors on multiple lines", function () {
     var input = { foo: "2", bar: 123 },
