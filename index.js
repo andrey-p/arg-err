@@ -3,25 +3,39 @@
 
 var kindof = require("kindof");
 
-exports.err = function (input, schema) {
+function errMsg(propName, inputType, schemaType) {
+  return "expected argument " + propName + " to be of type " + schemaType + " (was " + inputType + ")";
+}
+
+function getErrs(input, schema, prefix) {
   var prop,
     type,
-    errs = [],
-    err = null;
+    errs = [];
+
+  prefix = prefix || "";
 
   for (prop in schema) {
     if (schema.hasOwnProperty(prop)) {
       type = kindof(input[prop]);
 
-      if (type !== schema[prop]) {
-        errs.push("expected argument " + prop + " to be of type " + schema[prop] + " (was " + type + ")");
+      if (kindof(schema[prop]) === "object") {
+        if (type === "object") {
+          // if both input and schema properties are objects
+          // we'll need to recurse
+          errs.push(getErrs(input[prop], schema[prop], prefix + prop + "."));
+        } else {
+          errs.push(errMsg(prefix + prop, type, "object"));
+        }
+      } else if (type !== schema[prop]) {
+        errs.push(errMsg(prefix + prop, type, schema[prop]));
       }
     }
   }
 
-  if (errs.length) {
-    err = errs.join("\n");
-  }
+  return errs;
+}
 
-  return err;
+exports.err = function (input, schema) {
+  var errs = getErrs(input, schema);
+  return errs.length ? errs.join("\n") : null;
 };

@@ -33,4 +33,18 @@ describe("arg-err", function () {
 
     err.should.equal("expected argument foo to be of type number (was string)\nexpected argument bar to be of type string (was number)");
   });
+  it("should be able to validate nested objects", function () {
+    var input = { foo: "2", bar: { baz: { bat: 1234 } } },
+      schema = { foo: "string", bar: { baz: { bat: "string" } } },
+      err = arg.err(input, schema);
+
+    err.should.include("expected argument bar.baz.bat to be of type string (was number)");
+  });
+  it("should report incorrectly typed objects in the input without recursing", function () {
+    var input = { foo: "2", bar: 123 },
+      schema = { foo: "string", bar: { baz: { bat: "string" } } },
+      err = arg.err(input, schema);
+
+    err.should.include("expected argument bar to be of type object (was number)");
+  });
 });
