@@ -11,6 +11,7 @@ describe("arg-err", function () {
       err = arg.err(input, { foo: "number" });
 
     should.not.exist(err);
+    (err === null).should.be.true;
   });
   it("should give an error for invalid args", function () {
     var input = { foo: "2" },
