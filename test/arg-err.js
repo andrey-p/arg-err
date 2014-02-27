@@ -47,4 +47,26 @@ describe("arg-err", function () {
 
     err.should.include("expected argument bar to be of type object (was number)");
   });
+  it("should validate using regex", function () {
+    var input = { foo: "hello" },
+      schema = { foo: /^hel+o$/ },
+      err = arg.err(input, schema);
+
+    should.not.exist(err);
+    (err === null).should.be.true;
+  });
+  it("should throw correct error for regex validation", function () {
+    var input = { foo: "goodbye" },
+      schema = { foo: /^hel+o$/ },
+      err = arg.err(input, schema);
+
+    err.should.include("expected argument foo to match /^hel+o$/ (was \"goodbye\")");
+  });
+  it("should assume regex schema elements are string type", function () {
+    var input = { foo: 123 },
+      schema = { foo: /^hel+o$/ },
+      err = arg.err(input, schema);
+
+    err.should.include("expected argument foo to be of type string (was number)");
+  });
 });
