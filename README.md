@@ -43,6 +43,18 @@ frobnicate({
 });
 ```
 
+`arg-err` supports nested schemas and regexes too:
+
+```javascript
+var args = { foo: { bar: 123 }, baz: "bla" },
+  err = arg.err(args, {
+    foo: { bar: "string" },
+    baz: /^qux$/
+  });
+
+assert.equal(err, "expected argument foo.bar to be of type string (was number)\nexpected argument baz to match /^qux$/ (was \"bla\")");
+```
+
 License
 ----
 
