@@ -3,21 +3,27 @@
 
 var kindof = require("kindof");
 
-function regexpErrMsg(propName, inputPattern, input) {
-  return "expected argument " + propName + " to match " + inputPattern.toString() + " (was \"" + input + "\")";
+function regexpErrMsg(args) {
+  return "expected argument " + args.propName
+    + " to match " + args.inputPattern.toString()
+    + " (was \"" + args.input + "\")";
 }
 
-function errMsg(propName, inputType, schemaType) {
-  return "expected argument " + propName + " to be of type " + schemaType + " (was " + inputType + ")";
+function errMsg(args) {
+  return "expected argument " + args.propName
+    + " to be of type " + args.schemaType
+    + " (was " + args.inputType + ")";
 }
 
-function getErrs(input, schema, prefix) {
+function getErrs(args) {
+  // not checking whether args is valid because... seriously?
   var prop,
+    schema = args.schema,
+    input = args.input,
+    prefix = args.prefix || "",
     type,
     schemaType,
     errs = [];
-
-  prefix = prefix || "";
 
   for (prop in schema) {
     if (schema.hasOwnProperty(prop)) {
@@ -28,18 +34,38 @@ function getErrs(input, schema, prefix) {
         if (type === "object") {
           // if both input and schema properties are objects
           // we'll need to recurse
-          errs.push(getErrs(input[prop], schema[prop], prefix + prop + "."));
+          errs.push(getErrs({
+            input: input[prop],
+            schema: schema[prop],
+            prefix: prefix + prop + "."
+          }));
         } else {
-          errs.push(errMsg(prefix + prop, type, "object"));
+          errs.push(errMsg({
+            propName: prefix + prop,
+            inputType: type,
+            schemaType: "object"
+          }));
         }
       } else if (schemaType === "regexp") {
         if (type === "string" && !schema[prop].test(input[prop])) {
-          errs.push(regexpErrMsg(prefix + prop, schema[prop], input[prop]));
+          errs.push(regexpErrMsg({
+            propName: prefix + prop,
+            inputPattern: schema[prop],
+            input: input[prop]
+          }));
         } else if (type !== "string") {
-          errs.push(errMsg(prefix + prop, type, "string"));
+          errs.push(errMsg({
+            propName: prefix + prop,
+            inputType: type,
+            schemaType: "string"
+          }));
         }
       } else if (type !== schema[prop]) {
-        errs.push(errMsg(prefix + prop, type, schema[prop]));
+        errs.push(errMsg({
+          propName: prefix + prop,
+          inputType: type,
+          schemaType: schema[prop]
+        }));
       }
     }
   }
@@ -48,6 +74,10 @@ function getErrs(input, schema, prefix) {
 }
 
 exports.err = function (input, schema) {
-  var errs = getErrs(input, schema);
+  var errs = getErrs({
+    input: input,
+    schema: schema
+  });
+
   return errs.length ? errs.join(", ") : null;
 };
