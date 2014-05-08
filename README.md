@@ -15,7 +15,7 @@ API
 
 ### err(argsToTest, schema)
 
-Returns `null` if there's no validation errors, otherwise it returns a text description separated by a newline.
+Returns `null` if there's no validation errors, otherwise it returns a text description separated by a comma.
 
 Example
 ----
@@ -39,7 +39,7 @@ frobnicate({
   foo: 123,
   bar: 456
 }, function (err) {
-  assert.equal(err, "expected argument bar to be of type string (was number)\nexpected argument baz to be of type regexp");
+  assert.equal(err, "expected argument bar to be of type string (was number), expected argument baz to be of type regexp");
 });
 ```
 
@@ -52,7 +52,7 @@ var args = { foo: { bar: 123 }, baz: "bla" },
     baz: /^qux$/
   });
 
-assert.equal(err, "expected argument foo.bar to be of type string (was number)\nexpected argument baz to match /^qux$/ (was \"bla\")");
+assert.equal(err, "expected argument foo.bar to be of type string (was number), expected argument baz to match /^qux$/ (was \"bla\")");
 ```
 
 License

@@ -31,7 +31,7 @@ describe("arg-err", function () {
     var input = { foo: "2", bar: 123 },
       err = arg.err(input, { foo: "number", bar: "string" });
 
-    err.should.equal("expected argument foo to be of type number (was string)\nexpected argument bar to be of type string (was number)");
+    err.should.equal("expected argument foo to be of type number (was string), expected argument bar to be of type string (was number)");
   });
   it("should be able to validate nested objects", function () {
     var input = { foo: "2", bar: { baz: { bat: 1234 } } },

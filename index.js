@@ -49,5 +49,5 @@ function getErrs(input, schema, prefix) {
 
 exports.err = function (input, schema) {
   var errs = getErrs(input, schema);
-  return errs.length ? errs.join("\n") : null;
+  return errs.length ? errs.join(", ") : null;
 };
