@@ -69,4 +69,22 @@ describe("arg-err", function () {
 
     err.should.include("expected argument foo to be of type string (was number)");
   });
+  it("should accept a third argument for an optional schema", function () {
+    var input = { foo: 123, bar: 456 },
+      schema = { foo: "number" },
+      optSchema = { bar: "string" },
+      err = arg.err(input, schema, optSchema);
+
+    should.exist(err);
+    err.should.include("expected optional argument bar to be of type string (was number)");
+  });
+  it("should not give an error for a missing optional arg", function () {
+    var input = { foo: 123 },
+      schema = { foo: "number" },
+      optSchema = { bar: "string" },
+      err = arg.err(input, schema, optSchema);
+
+    should.not.exist(err);
+    (err === null).should.be.true;
+  });
 });

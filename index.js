@@ -4,13 +4,15 @@
 var kindof = require("kindof");
 
 function regexpErrMsg(args) {
-  return "expected argument " + args.propName
+  return "expected" + (args.optional ? " optional" : "")
+    + " argument " + args.propName
     + " to match " + args.inputPattern.toString()
     + " (was \"" + args.input + "\")";
 }
 
 function errMsg(args) {
-  return "expected argument " + args.propName
+  return "expected" + (args.optional ? " optional" : "")
+    + " argument " + args.propName
     + " to be of type " + args.schemaType
     + " (was " + args.inputType + ")";
 }
@@ -21,6 +23,7 @@ function getErrs(args) {
     schema = args.schema,
     input = args.input,
     prefix = args.prefix || "",
+    optional = args.optional || false,
     type,
     schemaType,
     errs = [];
@@ -37,13 +40,15 @@ function getErrs(args) {
           errs.push(getErrs({
             input: input[prop],
             schema: schema[prop],
-            prefix: prefix + prop + "."
+            prefix: prefix + prop + ".",
+            optional: optional
           }));
         } else {
           errs.push(errMsg({
             propName: prefix + prop,
             inputType: type,
-            schemaType: "object"
+            schemaType: "object",
+            optional: optional
           }));
         }
       } else if (schemaType === "regexp") {
@@ -51,20 +56,24 @@ function getErrs(args) {
           errs.push(regexpErrMsg({
             propName: prefix + prop,
             inputPattern: schema[prop],
-            input: input[prop]
+            input: input[prop],
+            optional: optional
           }));
         } else if (type !== "string") {
           errs.push(errMsg({
             propName: prefix + prop,
             inputType: type,
-            schemaType: "string"
+            schemaType: "string",
+            optional: optional
           }));
         }
-      } else if (type !== schema[prop]) {
+      } else if (type !== schema[prop]
+          && !(type === "undefined" && optional)) {
         errs.push(errMsg({
           propName: prefix + prop,
           inputType: type,
-          schemaType: schema[prop]
+          schemaType: schema[prop],
+          optional: optional
         }));
       }
     }
@@ -73,11 +82,19 @@ function getErrs(args) {
   return errs;
 }
 
-exports.err = function (input, schema) {
+exports.err = function (input, schema, optionalSchema) {
   var errs = getErrs({
     input: input,
     schema: schema
   });
+
+  if (optionalSchema) {
+    errs = errs.concat(getErrs({
+      input: input,
+      schema: optionalSchema,
+      optional: true
+    }));
+  }
 
   return errs.length ? errs.join(", ") : null;
 };
