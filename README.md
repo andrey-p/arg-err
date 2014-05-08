@@ -13,12 +13,14 @@ $ npm install arg-err
 API
 ----
 
-### err(argsToTest, schema)
+### err(argsToTest, schema, [optionalSchema])
 
 Returns `null` if there's no validation errors, otherwise it returns a text description separated by a comma.
 
 Example
 ----
+
+### Basic usage
 
 ```javascript
 var arg = require("arg-err");
@@ -43,7 +45,7 @@ frobnicate({
 });
 ```
 
-`arg-err` supports nested schemas and regexes too:
+### Nested schemas and regexes
 
 ```javascript
 var args = { foo: { bar: 123 }, baz: "bla" },
@@ -53,6 +55,21 @@ var args = { foo: { bar: 123 }, baz: "bla" },
   });
 
 assert.equal(err, "expected argument foo.bar to be of type string (was number), expected argument baz to match /^qux$/ (was \"bla\")");
+```
+
+### Optional arguments
+
+Optional arguments are handled exactly the same as normal ones, except no error is thrown if the property is undefined.
+
+```javascript
+var args = { foo: 123, bar: "bla" },
+  err = arg.err(args, {
+    foo: "number"
+  }, {
+    bar: "number"
+  });
+
+assert.equal(err, "expected optional argument bar to be of type number (was string)");
 ```
 
 License

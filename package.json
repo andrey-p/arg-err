@@ -1,6 +1,6 @@
 {
   "name": "arg-err",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Lightweight validator for function arguments",
   "main": "index.js",
   "author": "Andrey Pissantchev",
