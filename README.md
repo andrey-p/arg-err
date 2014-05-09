@@ -10,6 +10,13 @@ Installing
 $ npm install arg-err
 ```
 
+You can also add it to a client-side project using Browserify.
+
+Browser support:
+
+[![browser support](https://ci.testling.com/andrey-p/arg-err.png)
+](https://ci.testling.com/andrey-p/arg-err)
+
 API
 ----
 
