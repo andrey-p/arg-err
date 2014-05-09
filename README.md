@@ -10,7 +10,7 @@ Installing
 $ npm install arg-err
 ```
 
-You can also add it to a client-side project using Browserify.
+`dist/arg-err.js` has been compiled with Browserify, feel free to drop that in your client-side project!
 
 Browser support:
 
