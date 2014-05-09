@@ -28,6 +28,7 @@
     "uglify-js": "^2.4.13"
   },
   "testling": {
+    "harness": "mocha",
     "files": "test/*.js",
     "browsers": [
       "ie/8..latest",
