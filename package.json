@@ -19,8 +19,24 @@
   "dependencies": {
     "kindof": "*"
   },
+  "testling": {
+    "harness": "mocha",
+    "files": "test/*.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
+  },
   "devDependencies": {
+    "browserify": "^3.46.0",
     "mocha": "1.13.x",
-    "should": "2.0.x"
+    "should": "2.0.x",
+    "testling": "^1.6.1"
   }
 }
