@@ -20,25 +20,27 @@
   "dependencies": {
     "kindof": "*"
   },
-  "testling": {
-    "harness": "mocha",
-    "files": "test/*.js",
-    "browsers": [
-      "ie/6..latest",
-      "chrome/22..latest",
-      "firefox/16..latest",
-      "safari/latest",
-      "opera/11.0..latest",
-      "iphone/6",
-      "ipad/6",
-      "android-browser/latest"
-    ]
-  },
   "devDependencies": {
     "browserify": "^3.46.0",
     "mocha": "1.13.x",
     "should": "2.0.x",
     "testling": "^1.6.1",
     "uglify-js": "^2.4.13"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/8..latest",
+      "firefox/17..latest",
+      "firefox/nightly",
+      "chrome/22..latest",
+      "chrome/canary",
+      "opera/12..latest",
+      "opera/next",
+      "safari/5.1..latest",
+      "ipad/6.0..latest",
+      "iphone/6.0..latest",
+      "android-browser/4.2..latest"
+    ]
   }
 }
