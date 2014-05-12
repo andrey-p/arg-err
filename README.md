@@ -3,6 +3,17 @@ ARG-ERR
 
 Lightweight validator for function arguments
 
+Features
+----
+
+arg-err supports:
+
+- validating against a type name (e.g. `string` or `number`)
+- validating a string argument against a regex
+- validating against multiple possible types defined as an array (e.g. `["string", "number"]`)
+- validating against a nested schema
+- optional arguments
+
 Installing
 ----
 
