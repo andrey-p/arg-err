@@ -87,4 +87,28 @@ describe("arg-err", function () {
     should.not.exist(err);
     (err === null).should.be.true;
   });
+  it("should be able to validate against an array", function () {
+    var input = { foo: 123 },
+      schema = { foo: ["string", "number"] },
+      err = arg.err(input, schema);
+
+    should.not.exist(err);
+    (err === null).should.be.true;
+  });
+  it("should throw an error if an argument doesn't match any of the options", function () {
+    var input = { foo: /reg[ex]/ },
+      schema = { foo: ["string", "number"] },
+      err = arg.err(input, schema);
+
+    should.exist(err);
+    err.should.include("expected argument foo to be of type string or number (was regexp)");
+  });
+  it("should still work if one of the multiple args is an object", function () {
+    var input = { foo: /reg[ex]/ },
+      schema = { foo: ["string", { bar: "string" }] },
+      err = arg.err(input, schema);
+
+    should.exist(err);
+    err.should.include("expected argument foo to be of type string or object (was regexp)");
+  });
 });

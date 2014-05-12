@@ -64,6 +64,17 @@ var args = { foo: { bar: 123 }, baz: "bla" },
 assert.equal(err, "expected argument foo.bar to be of type string (was number), expected argument baz to match /^qux$/ (was \"bla\")");
 ```
 
+### Multiple possible arguments
+
+```javascript
+var args = { foo: /reg[exp]$/ },
+  err = arg.err(args, {
+    foo: ["string", "number"]
+  });
+
+assert.equal(err, "expected argument foo to be of type string or number (was regexp)");
+```
+
 ### Optional arguments
 
 Optional arguments are handled exactly the same as normal ones, except no error is thrown if the property is undefined.

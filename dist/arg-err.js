@@ -28,6 +28,7 @@ function getErrs(args) {
     type,
     schemaType,
     expectedType,
+    passesSingleValidation,
     errs = [];
 
   for (prop in schema) {
@@ -44,7 +45,42 @@ function getErrs(args) {
       // special cases where the schema prop is not defined as a string
       // if input prop does not fit the special case,
       // switch to a simpler expected type
-      if (schemaType === "object") {
+      if (schemaType === "array") {
+        // if schema type is an array, we need to check
+        // whether some of them validate
+        passesSingleValidation = schema[prop].some(function (possibleType) {
+          var tempInput = {},
+            tempSchema = {},
+            tempErrs;
+
+          tempInput[prop] = input[prop];
+          tempSchema[prop] = possibleType;
+          tempErrs = getErrs({
+            input: tempInput,
+            schema: tempSchema,
+            optional: optional
+          });
+
+          return tempErrs.length === 0;
+        });
+
+        if (passesSingleValidation) {
+          continue;
+        } else {
+          // if none of them validate, we need
+          // a list of all the possible property types
+          // separated by "or"
+          expectedType = schema[prop].map(function (possibleType) {
+            schemaType = kindof(possibleType);
+
+            if (schemaType !== "string") {
+              possibleType = schemaType;
+            }
+
+            return possibleType;
+          }).join(" or ");
+        }
+      } else if (schemaType === "object") {
         if (type === "object") {
           // if both input and schema properties are objects
           // we'll need to recurse
