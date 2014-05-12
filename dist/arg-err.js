@@ -18,6 +18,23 @@ function errMsg(args) {
     + " (was " + args.inputType + ")";
 }
 
+function getExpectedTypeFromSchemaProperty(schemaProperty) {
+  var typeToReturn,
+    actualType = kindof(schemaProperty);
+
+  if (actualType === "object") {
+    typeToReturn = "object";
+  } else if (actualType === "regexp") {
+    typeToReturn = "string";
+  } else if (actualType === "array") {
+    typeToReturn = schemaProperty.map(getExpectedTypeFromSchemaProperty).join(" or ");
+  } else {
+    typeToReturn = schemaProperty;
+  }
+
+  return typeToReturn;
+}
+
 function getErrs(args) {
   // not checking whether args is valid because... seriously?
   var prop,
@@ -28,57 +45,45 @@ function getErrs(args) {
     type,
     schemaType,
     expectedType,
-    passesSingleValidation,
+    passedSpecialCases,
     errs = [];
 
   for (prop in schema) {
     if (schema.hasOwnProperty(prop)) {
+      passedSpecialCases = false;
       type = kindof(input[prop]);
-      expectedType = schema[prop];
       schemaType = kindof(schema[prop]);
 
       // any kinds of checks are pointless if optional schema
+      // if property is undefined
       if (optional && type === "undefined") {
         continue;
       }
 
       // special cases where the schema prop is not defined as a string
       // if input prop does not fit the special case,
-      // switch to a simpler expected type
+      // defer to normal type checking
       if (schemaType === "array") {
         // if schema type is an array, we need to check
         // whether some of them validate
-        passesSingleValidation = schema[prop].some(function (possibleType) {
-          var tempInput = {},
-            tempSchema = {},
-            tempErrs;
+        //
+        // if at least one validates, there's no error
+        if (schema[prop].some(function (possibleType) {
+            var tempInput = {},
+              tempSchema = {},
+              tempErrs;
 
-          tempInput[prop] = input[prop];
-          tempSchema[prop] = possibleType;
-          tempErrs = getErrs({
-            input: tempInput,
-            schema: tempSchema,
-            optional: optional
-          });
+            tempInput[prop] = input[prop];
+            tempSchema[prop] = possibleType;
+            tempErrs = getErrs({
+              input: tempInput,
+              schema: tempSchema,
+              optional: optional
+            });
 
-          return tempErrs.length === 0;
-        });
-
-        if (passesSingleValidation) {
-          continue;
-        } else {
-          // if none of them validate, we need
-          // a list of all the possible property types
-          // separated by "or"
-          expectedType = schema[prop].map(function (possibleType) {
-            schemaType = kindof(possibleType);
-
-            if (schemaType !== "string") {
-              possibleType = schemaType;
-            }
-
-            return possibleType;
-          }).join(" or ");
+            return tempErrs.length === 0;
+          })) {
+          passedSpecialCases = true;
         }
       } else if (schemaType === "object") {
         if (type === "object") {
@@ -91,9 +96,7 @@ function getErrs(args) {
             optional: optional
           }));
 
-          continue;
-        } else {
-          expectedType = "object";
+          passedSpecialCases = true;
         }
       } else if (schemaType === "regexp") {
         // special case regex
@@ -106,13 +109,14 @@ function getErrs(args) {
             optional: optional
           }));
 
-          continue;
-        } else {
-          expectedType = "string";
+          passedSpecialCases = true;
         }
+      } else if (schemaType !== "string") {
+        throw new Error("Unsupported schema type: " + schemaType + ". Supported ones are string, object, regexp or array");
       }
 
-      if (type !== expectedType) {
+      expectedType = getExpectedTypeFromSchemaProperty(schema[prop]);
+      if (!passedSpecialCases && type !== expectedType) {
         errs.push(errMsg({
           propName: prefix + prop,
           inputType: type,
