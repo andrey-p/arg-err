@@ -110,6 +110,8 @@ function getErrs(args) {
 
           passedSpecialCases = true;
         }
+      } else if (schemaType !== "string") {
+        throw new Error("Unsupported schema type: " + schemaType + ". Supported ones are string, object, regexp or array");
       }
 
       expectedType = getExpectedTypeFromSchemaProperty(schema[prop]);

@@ -111,4 +111,13 @@ describe("arg-err", function () {
     should.exist(err);
     err.should.include("expected argument foo to be of type string or object (was regexp)");
   });
+  it("should error out if passed a weird type on the schema", function () {
+    var input = { foo: /reg[ex]/ },
+      schema = { foo: 123 },
+      err;
+ 
+    (function () {
+      arg.err(input, schema);
+    }).should.throw();
+  });
 });
