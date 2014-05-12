@@ -19,7 +19,7 @@ function errMsg(args) {
 
 function getExpectedTypeFromSchemaProperty(schemaProperty) {
   var typeToReturn,
-      actualType = kindof(schemaProperty);
+    actualType = kindof(schemaProperty);
 
   if (actualType === "object") {
     typeToReturn = "object";
@@ -67,21 +67,21 @@ function getErrs(args) {
         // whether some of them validate
         //
         // if at least one validates, there's no error
-        if(schema[prop].some(function (possibleType) {
-          var tempInput = {},
-            tempSchema = {},
-            tempErrs;
+        if (schema[prop].some(function (possibleType) {
+            var tempInput = {},
+              tempSchema = {},
+              tempErrs;
 
-          tempInput[prop] = input[prop];
-          tempSchema[prop] = possibleType;
-          tempErrs = getErrs({
-            input: tempInput,
-            schema: tempSchema,
-            optional: optional
-          });
+            tempInput[prop] = input[prop];
+            tempSchema[prop] = possibleType;
+            tempErrs = getErrs({
+              input: tempInput,
+              schema: tempSchema,
+              optional: optional
+            });
 
-          return tempErrs.length === 0;
-        })) {
+            return tempErrs.length === 0;
+          })) {
           passedSpecialCases = true;
         }
       } else if (schemaType === "object") {
