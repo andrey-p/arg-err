@@ -120,4 +120,28 @@ describe("arg-err", function () {
       arg.err(input, schema);
     }).should.throw();
   });
+  it("should be able to validate against a method", function () {
+    var input = { foo: 12 },
+      schema = {
+        foo: function isEven(foo) {
+          return foo % 2 === 0;
+        }
+      },
+      err = arg.err(input, schema);
+
+    should.not.exist(err);
+    (err === null).should.be.true;
+  });
+  it("should error out if method validation doesn't pass", function () {
+    var input = { foo: 15 },
+      schema = {
+        foo: function isEven(foo) {
+          return foo % 2 === 0;
+        }
+      },
+      err = arg.err(input, schema);
+
+    should.exist(err);
+    err.should.include("expected argument foo to pass isEven");
+  });
 });

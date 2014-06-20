@@ -17,6 +17,22 @@ function errMsg(args) {
     + " (was " + args.inputType + ")";
 }
 
+function functionErrMsg(args) {
+  var functionName;
+
+  // extract the function name from its source
+  // to try and give a useful error message
+  try {
+    functionName = /function\s+([a-zA-Z0-9_]+)\s*\(/.exec(args.functionSource)[1];
+  } catch (e) {
+    functionName = "anonymous function";
+  }
+
+  return "expected" + (args.optional ? " optional" : "")
+    + " argument " + args.propName
+    + " to pass " + functionName;
+}
+
 function getExpectedTypeFromSchemaProperty(schemaProperty) {
   var typeToReturn,
     actualType = kindof(schemaProperty);
@@ -110,6 +126,18 @@ function getErrs(args) {
 
           passedSpecialCases = true;
         }
+      } else if (schemaType === "function") {
+        // special case function
+        // run the property against the function
+        if (!schema[prop](input[prop])) {
+          errs.push(functionErrMsg({
+            propName: prefix + prop,
+            functionSource: schema[prop].toString(),
+            optional: optional
+          }));
+        }
+
+        passedSpecialCases = true;
       } else if (schemaType !== "string") {
         throw new Error("Unsupported schema type: " + schemaType + ". Supported ones are string, object, regexp or array");
       }

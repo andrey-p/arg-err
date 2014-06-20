@@ -12,6 +12,7 @@ arg-err supports:
 - validating a string argument against a regex
 - validating against multiple possible types defined as an array (e.g. `["string", "number"]`)
 - validating against a nested schema
+- validating against a function for slightly more complex logic
 - optional arguments
 
 Installing
@@ -84,6 +85,23 @@ var args = { foo: /reg[exp]$/ },
   });
 
 assert.equal(err, "expected argument foo to be of type string or number (was regexp)");
+```
+
+### Complex validation
+
+Sometimes you do need that extra boost.
+
+Give the validation method a name to get a sane error message.
+
+```javascript
+var args = { foo: 13 },
+  err = arg.err(args, {
+    foo: function isEven(foo) {
+      return foo % 2 === 0;
+    }
+  });
+
+assert.equal(err, "expected argument foo to pass isEven");
 ```
 
 ### Optional arguments
