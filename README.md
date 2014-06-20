@@ -91,14 +91,16 @@ assert.equal(err, "expected argument foo to be of type string or number (was reg
 
 Sometimes you do need that extra boost.
 
-Give the validation method a name to get a sane error message.
+`arg-err` uses the method name in the validation message, so don't use anonymous functions if you want a sane message.
 
 ```javascript
+function isEven(foo) {
+  return foo % 2 === 0;
+}
+
 var args = { foo: 13 },
   err = arg.err(args, {
-    foo: function isEven(foo) {
-      return foo % 2 === 0;
-    }
+    foo: isEven
   });
 
 assert.equal(err, "expected argument foo to pass isEven");
