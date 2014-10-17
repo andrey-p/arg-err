@@ -34,6 +34,20 @@ function functionErrMsg(args) {
     + " to pass " + functionName;
 }
 
+function recursiveFlatten(array, result) {
+  var i,
+    result = result || [];
+
+  for (i = 0; i < array.length; i++) {
+    if (kindof(array[i]) === "array") {
+      recursiveFlatten(array[i], result);
+    } else {
+      result.push(array[i]);
+    }
+  }
+  return result;
+}
+
 function getExpectedTypeFromSchemaProperty(schemaProperty) {
   var typeToReturn,
     actualType = kindof(schemaProperty);
@@ -171,6 +185,11 @@ exports.err = function (input, schema, optionalSchema) {
       optional: true
     }));
   }
+
+  // in complex schemas (think nested objects two levels deep)
+  // join() doesn't work properly and leaves artifacts
+  // so we need to flatten everything first
+  errs = recursiveFlatten(errs);
 
   return errs.length ? errs.join(", ") : null;
 };

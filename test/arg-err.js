@@ -144,4 +144,29 @@ describe("arg-err", function () {
     should.exist(err);
     err.should.include("expected argument foo to pass isEven");
   });
+  it("should be able to validate schemas with nested objects", function () {
+    var input = {
+        foo: {
+          bar: {
+            qux: 1,
+          },
+          baz: {
+            quux: 2
+          }
+        }
+      },
+      schema = {
+        foo: {
+          bar: {
+            qux: "number",
+          },
+          baz: {
+            quux: "number"
+          }
+        }
+      },
+      err = arg.err(input, schema);
+
+    should.not.exist(err);
+  });
 });
