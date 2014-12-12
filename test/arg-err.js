@@ -38,14 +38,14 @@ describe("arg-err", function () {
       schema = { foo: "string", bar: { baz: { bat: "string" } } },
       err = arg.err(input, schema);
 
-    err.should.include("expected argument bar.baz.bat to be of type string (was number)");
+    err.should.containEql("expected argument bar.baz.bat to be of type string (was number)");
   });
   it("should report incorrectly typed objects in the input without recursing", function () {
     var input = { foo: "2", bar: 123 },
       schema = { foo: "string", bar: { baz: { bat: "string" } } },
       err = arg.err(input, schema);
 
-    err.should.include("expected argument bar to be of type object (was number)");
+    err.should.containEql("expected argument bar to be of type object (was number)");
   });
   it("should validate using regex", function () {
     var input = { foo: "hello" },
@@ -60,14 +60,14 @@ describe("arg-err", function () {
       schema = { foo: /^hel+o$/ },
       err = arg.err(input, schema);
 
-    err.should.include("expected argument foo to match /^hel+o$/ (was \"goodbye\")");
+    err.should.containEql("expected argument foo to match /^hel+o$/ (was \"goodbye\")");
   });
   it("should assume regex schema elements are string type", function () {
     var input = { foo: 123 },
       schema = { foo: /^hel+o$/ },
       err = arg.err(input, schema);
 
-    err.should.include("expected argument foo to be of type string (was number)");
+    err.should.containEql("expected argument foo to be of type string (was number)");
   });
   it("should accept a third argument for an optional schema", function () {
     var input = { foo: 123, bar: 456 },
@@ -76,7 +76,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema, optSchema);
 
     should.exist(err);
-    err.should.include("expected optional argument bar to be of type string (was number)");
+    err.should.containEql("expected optional argument bar to be of type string (was number)");
   });
   it("should not give an error for a missing optional arg", function () {
     var input = { foo: 123 },
@@ -101,7 +101,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema);
 
     should.exist(err);
-    err.should.include("expected argument foo to be of type string or number (was regexp)");
+    err.should.containEql("expected argument foo to be of type string or number (was regexp)");
   });
   it("should still work if one of the multiple args is an object", function () {
     var input = { foo: /reg[ex]/ },
@@ -109,7 +109,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema);
 
     should.exist(err);
-    err.should.include("expected argument foo to be of type string or object (was regexp)");
+    err.should.containEql("expected argument foo to be of type string or object (was regexp)");
   });
   it("should error out if passed a weird type on the schema", function () {
     var input = { foo: /reg[ex]/ },
@@ -142,7 +142,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema);
 
     should.exist(err);
-    err.should.include("expected argument foo to pass isEven");
+    err.should.containEql("expected argument foo to pass isEven");
   });
   it("should be able to validate schemas with nested objects", function () {
     var input = {

@@ -21,11 +21,11 @@
     "kindof": "*"
   },
   "devDependencies": {
-    "browserify": "^3.46.0",
-    "mocha": "1.18.x",
-    "should": "2.0.x",
-    "testling": "^1.6.1",
-    "uglify-js": "^2.4.13"
+    "browserify": "^7.0.0",
+    "mocha": "2.0.x",
+    "should": "4.4.x",
+    "testling": "^1.7.1",
+    "uglify-js": "^2.4.16"
   },
   "testling": {
     "harness": "mocha",
