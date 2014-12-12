@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec test/arg-err.js",
+    "pretest": "./node_modules/.bin/jslint index.js && ./node_modules/.bin/jslint test/arg-err.js",
     "bundle": "./node_modules/.bin/browserify index.js -s arg-err -o dist/arg-err.js"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "browserify": "^7.0.0",
+    "jslint": "^0.6.6",
     "mocha": "2.0.x",
     "should": "4.4.x",
     "testling": "^1.7.1",

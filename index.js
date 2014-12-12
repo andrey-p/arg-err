@@ -1,4 +1,3 @@
-/*jslint indent: 2, node: true, continue: true*/
 "use strict";
 
 var kindof = require("kindof");
@@ -34,10 +33,11 @@ function functionErrMsg(args) {
 }
 
 function recursiveFlatten(array, result) {
-  var i,
-    result = result || [];
+  var i;
 
-  for (i = 0; i < array.length; i++) {
+  result = result || [];
+
+  for (i = 0; i < array.length; i += 1) {
     if (kindof(array[i]) === "array") {
       recursiveFlatten(array[i], result);
     } else {
@@ -77,6 +77,26 @@ function getErrs(args) {
     passedSpecialCases,
     errs = [];
 
+  // used for array schema types
+  // where all we need is to pass a single array element
+  function someSchemasValidate(propName) {
+    return schema[propName].some(function (possibleType) {
+      var tempInput = {},
+        tempSchema = {},
+        tempErrs;
+
+      tempInput[propName] = input[propName];
+      tempSchema[propName] = possibleType;
+      tempErrs = getErrs({
+        input: tempInput,
+        schema: tempSchema,
+        optional: optional
+      });
+
+      return tempErrs.length === 0;
+    });
+  }
+
   for (prop in schema) {
     if (schema.hasOwnProperty(prop)) {
       passedSpecialCases = false;
@@ -97,21 +117,7 @@ function getErrs(args) {
         // whether some of them validate
         //
         // if at least one validates, there's no error
-        if (schema[prop].some(function (possibleType) {
-            var tempInput = {},
-              tempSchema = {},
-              tempErrs;
-
-            tempInput[prop] = input[prop];
-            tempSchema[prop] = possibleType;
-            tempErrs = getErrs({
-              input: tempInput,
-              schema: tempSchema,
-              optional: optional
-            });
-
-            return tempErrs.length === 0;
-          })) {
+        if (someSchemasValidate(prop)) {
           passedSpecialCases = true;
         }
       } else if (schemaType === "object") {

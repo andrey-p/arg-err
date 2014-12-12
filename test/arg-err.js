@@ -1,4 +1,3 @@
-/*jslint indent: 2, node: true, nomen: true*/
 /*globals it, describe*/
 "use strict";
 
@@ -11,7 +10,7 @@ describe("arg-err", function () {
       err = arg.err(input, { foo: "number" });
 
     should.not.exist(err);
-    (err === null).should.be.true;
+    (err === null).should.eql(true);
   });
   it("should give an error for invalid args", function () {
     var input = { foo: "2" },
@@ -53,7 +52,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema);
 
     should.not.exist(err);
-    (err === null).should.be.true;
+    (err === null).should.eql(true);
   });
   it("should throw correct error for regex validation", function () {
     var input = { foo: "goodbye" },
@@ -85,7 +84,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema, optSchema);
 
     should.not.exist(err);
-    (err === null).should.be.true;
+    (err === null).should.eql(true);
   });
   it("should be able to validate against an array", function () {
     var input = { foo: 123 },
@@ -93,7 +92,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema);
 
     should.not.exist(err);
-    (err === null).should.be.true;
+    (err === null).should.eql(true);
   });
   it("should throw an error if an argument doesn't match any of the options", function () {
     var input = { foo: /reg[ex]/ },
@@ -113,12 +112,13 @@ describe("arg-err", function () {
   });
   it("should error out if passed a weird type on the schema", function () {
     var input = { foo: /reg[ex]/ },
-      schema = { foo: 123 },
-      err;
- 
-    (function () {
+      schema = { foo: 123 };
+
+    function bad() {
       arg.err(input, schema);
-    }).should.throw();
+    }
+
+    bad.should.throw();
   });
   it("should be able to validate against a method", function () {
     var input = { foo: 12 },
@@ -130,7 +130,7 @@ describe("arg-err", function () {
       err = arg.err(input, schema);
 
     should.not.exist(err);
-    (err === null).should.be.true;
+    (err === null).should.eql(true);
   });
   it("should error out if method validation doesn't pass", function () {
     var input = { foo: 15 },
