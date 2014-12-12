@@ -3,6 +3,8 @@ ARG-ERR
 
 Lightweight validator for function arguments
 
+[![Build Status](https://travis-ci.org/andrey-p/arg-err.svg?branch=master)](https://travis-ci.org/andrey-p/arg-err)
+
 Features
 ----
 
