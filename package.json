@@ -27,7 +27,8 @@
     "mocha": "2.0.x",
     "should": "4.4.x",
     "testling": "^1.7.1",
-    "uglify-js": "^2.4.16"
+    "uglify-js": "^2.4.16",
+    "zuul": "^1.16.0"
   },
   "testling": {
     "harness": "mocha",
