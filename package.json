@@ -24,27 +24,15 @@
   "devDependencies": {
     "browserify": "^7.0.0",
     "jslint": "^0.6.6",
+    "karma": "^0.12.31",
+    "karma-browserify": "^3.0.1",
+    "karma-cli": "0.0.4",
+    "karma-mocha": "^0.1.10",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sauce-launcher": "^0.2.10",
+    "karma-spec-reporter": "0.0.16",
     "mocha": "2.0.x",
     "should": "4.4.x",
-    "testling": "^1.7.1",
-    "uglify-js": "^2.4.16",
-    "zuul": "^1.16.0"
-  },
-  "testling": {
-    "harness": "mocha",
-    "files": "test/*.js",
-    "browsers": [
-      "ie/6..latest",
-      "firefox/17..latest",
-      "firefox/nightly",
-      "chrome/22..latest",
-      "chrome/canary",
-      "opera/12..latest",
-      "opera/next",
-      "safari/5.1..latest",
-      "ipad/6.0..latest",
-      "iphone/6.0..latest",
-      "android-browser/4.2..latest"
-    ]
+    "uglify-js": "^2.4.16"
   }
 }
