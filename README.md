@@ -11,11 +11,11 @@ Features
 arg-err supports:
 
 - validating against a type name (e.g. `string` or `number`)
-- validating a string argument against a regex
+- validating a string property against a regex
 - validating against multiple possible types defined as an array (e.g. `["string", "number"]`)
 - validating against a nested schema
 - validating against a function for slightly more complex logic
-- optional arguments
+- optional properties
 
 Installing
 ----
@@ -62,7 +62,7 @@ frobnicate({
   foo: 123,
   bar: 456
 }, function (err) {
-  assert.equal(err, "expected argument bar to be of type string (was number), expected argument baz to be of type regexp");
+  assert.equal(err, "expected property bar to be of type string (was number), expected property baz to be of type regexp");
 });
 ```
 
@@ -75,10 +75,10 @@ var args = { foo: { bar: 123 }, baz: "bla" },
     baz: /^qux$/
   });
 
-assert.equal(err, "expected argument foo.bar to be of type string (was number), expected argument baz to match /^qux$/ (was \"bla\")");
+assert.equal(err, "expected property foo.bar to be of type string (was number), expected property baz to match /^qux$/ (was \"bla\")");
 ```
 
-### Multiple possible arguments
+### Multiple possible properties
 
 ```javascript
 var args = { foo: /reg[exp]$/ },
@@ -86,7 +86,7 @@ var args = { foo: /reg[exp]$/ },
     foo: ["string", "number"]
   });
 
-assert.equal(err, "expected argument foo to be of type string or number (was regexp)");
+assert.equal(err, "expected property foo to be of type string or number (was regexp)");
 ```
 
 ### Complex validation
@@ -105,12 +105,12 @@ var args = { foo: 13 },
     foo: isEven
   });
 
-assert.equal(err, "expected argument foo to pass isEven");
+assert.equal(err, "expected property foo to pass isEven");
 ```
 
-### Optional arguments
+### Optional properties
 
-Optional arguments are handled exactly the same as normal ones, except no error is thrown if the property is undefined.
+Optional properties are handled exactly the same as normal ones, except no error is thrown if the property is undefined.
 
 ```javascript
 var args = { foo: 123, bar: "bla" },
@@ -120,7 +120,7 @@ var args = { foo: 123, bar: "bla" },
     bar: "number"
   });
 
-assert.equal(err, "expected optional argument bar to be of type number (was string)");
+assert.equal(err, "expected optional property bar to be of type number (was string)");
 ```
 
 License
