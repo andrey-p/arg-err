@@ -4,14 +4,14 @@ var kindof = require("kindof");
 
 function regexpErrMsg(args) {
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " property " + args.propName
     + " to match " + args.inputPattern.toString()
     + " (was \"" + args.input + "\")";
 }
 
 function errMsg(args) {
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " property " + args.propName
     + " to be of type " + args.schemaType
     + " (was " + args.inputType + ")";
 }
@@ -28,7 +28,7 @@ function functionErrMsg(args) {
   }
 
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " property " + args.propName
     + " to pass " + functionName;
 }
 
