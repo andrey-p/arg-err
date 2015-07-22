@@ -120,6 +120,18 @@ var args = { foo: 123, bar: "bla" },
 assert.equal(err, "expected optional argument bar to be of type number (was string)");
 ```
 
+### propErr mode
+
+What you're doing is validating properties on an object. If you'd rather be [a bit clearer about it](https://github.com/andrey-p/arg-err/pull/9), you can switch to `propErr` mode.
+
+```javascript
+var prop = require("arg-err").config({ propErr: true });
+
+var err = prop.err({ foo: "2" }, { foo: "number" });
+
+assert.equal(err, "expected property foo to be of type number (was string)");
+```
+
 License
 ----
 

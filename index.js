@@ -1,17 +1,18 @@
 "use strict";
 
-var kindof = require("kindof");
+var kindof = require("kindof"),
+  wordToUse = "argument";
 
 function regexpErrMsg(args) {
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " " + wordToUse + " " + args.propName
     + " to match " + args.inputPattern.toString()
     + " (was \"" + args.input + "\")";
 }
 
 function errMsg(args) {
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " " + wordToUse + " " + args.propName
     + " to be of type " + args.schemaType
     + " (was " + args.inputType + ")";
 }
@@ -28,7 +29,7 @@ function functionErrMsg(args) {
   }
 
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " " + wordToUse + " " + args.propName
     + " to pass " + functionName;
 }
 
@@ -176,6 +177,13 @@ function getErrs(args) {
 
   return errs;
 }
+
+exports.config = function (opts) {
+  // if you'd rather be pedantic about what you're checking
+  wordToUse = opts.propErr ? "property" : "argument";
+
+  return this;
+};
 
 exports.err = function (input, schema, optionalSchema) {
   var errs = getErrs({
