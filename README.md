@@ -26,10 +26,7 @@ $ npm install arg-err
 
 `dist/arg-err.js` has been compiled with Browserify, feel free to drop that in your client-side project!
 
-Browser support:
-
-[![browser support](https://ci.testling.com/andrey-p/arg-err.png)
-](https://ci.testling.com/andrey-p/arg-err)
+Supports IE9+ and all the other usual suspects.
 
 API
 ----
