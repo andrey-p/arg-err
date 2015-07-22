@@ -1,19 +1,19 @@
-!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.argErr=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-/*jslint indent: 2, node: true, continue: true*/
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.argErr = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
-var kindof = _dereq_("kindof");
+var kindof = require("kindof"),
+  wordToUse = "argument";
 
 function regexpErrMsg(args) {
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " " + wordToUse + " " + args.propName
     + " to match " + args.inputPattern.toString()
     + " (was \"" + args.input + "\")";
 }
 
 function errMsg(args) {
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " " + wordToUse + " " + args.propName
     + " to be of type " + args.schemaType
     + " (was " + args.inputType + ")";
 }
@@ -30,15 +30,16 @@ function functionErrMsg(args) {
   }
 
   return "expected" + (args.optional ? " optional" : "")
-    + " argument " + args.propName
+    + " " + wordToUse + " " + args.propName
     + " to pass " + functionName;
 }
 
 function recursiveFlatten(array, result) {
-  var i,
-    result = result || [];
+  var i;
 
-  for (i = 0; i < array.length; i++) {
+  result = result || [];
+
+  for (i = 0; i < array.length; i += 1) {
     if (kindof(array[i]) === "array") {
       recursiveFlatten(array[i], result);
     } else {
@@ -78,6 +79,26 @@ function getErrs(args) {
     passedSpecialCases,
     errs = [];
 
+  // used for array schema types
+  // where all we need is to pass a single array element
+  function someSchemasValidate(propName) {
+    return schema[propName].some(function (possibleType) {
+      var tempInput = {},
+        tempSchema = {},
+        tempErrs;
+
+      tempInput[propName] = input[propName];
+      tempSchema[propName] = possibleType;
+      tempErrs = getErrs({
+        input: tempInput,
+        schema: tempSchema,
+        optional: optional
+      });
+
+      return tempErrs.length === 0;
+    });
+  }
+
   for (prop in schema) {
     if (schema.hasOwnProperty(prop)) {
       passedSpecialCases = false;
@@ -98,21 +119,7 @@ function getErrs(args) {
         // whether some of them validate
         //
         // if at least one validates, there's no error
-        if (schema[prop].some(function (possibleType) {
-            var tempInput = {},
-              tempSchema = {},
-              tempErrs;
-
-            tempInput[prop] = input[prop];
-            tempSchema[prop] = possibleType;
-            tempErrs = getErrs({
-              input: tempInput,
-              schema: tempSchema,
-              optional: optional
-            });
-
-            return tempErrs.length === 0;
-          })) {
+        if (someSchemasValidate(prop)) {
           passedSpecialCases = true;
         }
       } else if (schemaType === "object") {
@@ -172,6 +179,13 @@ function getErrs(args) {
   return errs;
 }
 
+exports.config = function (opts) {
+  // if you'd rather be pedantic about what you're checking
+  wordToUse = opts.propErr ? "property" : "argument";
+
+  return this;
+};
+
 exports.err = function (input, schema, optionalSchema) {
   var errs = getErrs({
     input: input,
@@ -194,24 +208,25 @@ exports.err = function (input, schema, optionalSchema) {
   return errs.length ? errs.join(", ") : null;
 };
 
-},{"kindof":2}],2:[function(_dereq_,module,exports){
+},{"kindof":2}],2:[function(require,module,exports){
 if (typeof module != "undefined") module.exports = kindof
 
 function kindof(obj) {
+  var type
   if (obj === undefined) return "undefined"
   if (obj === null) return "null"
 
-  switch (Object.prototype.toString.call(obj)) {
-    case "[object Boolean]": return "boolean"
-    case "[object Number]": return "number"
-    case "[object String]": return "string"
-    case "[object RegExp]": return "regexp"
-    case "[object Date]": return "date"
-    case "[object Array]": return "array"
-    default: return typeof obj
+  switch (type = typeof obj) {
+    case "object":
+      switch (Object.prototype.toString.call(obj)) {
+        case "[object RegExp]": return "regexp"
+        case "[object Date]": return "date"
+        case "[object Array]": return "array"
+      }
+
+    default: return type
   }
 }
 
-},{}]},{},[1])
-(1)
+},{}]},{},[1])(1)
 });
